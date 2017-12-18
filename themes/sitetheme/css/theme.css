@@ -601,3 +601,28 @@ h2 {
 #sidebar ul li.active > a {
     background: rgb(237, 237, 237);
 }
+
+.logo-title {
+    border-bottom: none;
+}
+
+.notify {
+    width: 100%;
+    padding: 10px;
+    background: #38424d;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    color: #ededed;
+    text-align: center;
+}
+
+footer a {
+    color: inherit;
+    border-bottom: 1px solid #ededed;
+}
+
+footer a:hover, footer a:active, footer a:focus {
+    color: gray;
+    border-bottom: gray;
+}

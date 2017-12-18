@@ -15,8 +15,8 @@
         <link rel="icon" type="image/png" href="{{ url('theme://images/favicon-16x16.png') }}" sizes="16x16">
         <link rel="manifest" href="{{ url('theme://images/images/manifest.json') }}">
         <link rel="mask-icon" href="{{ url('theme://images/safari-pinned-tab.svg') }}" color="#5bbad5">
-        <link rel="shortcut icon" href="{{ url('theme://images/favicon.ico') }}">    
-    
+        <link rel="shortcut icon" href="{{ url('theme://images/favicon.ico') }}">
+
         {% block stylesheets %}
             {% do assets.addCss('theme://css/featherlight.min.css', 103) %}
             {% do assets.addCss('theme://css-compiled/nucleus.css',102) %}
@@ -24,7 +24,7 @@
             {% do assets.addCss('theme://css/nav.css',100) %}
             {% do assets.addCss('theme://css/theme.css', 99) %}
             {% do assets.addCss('theme://css/font-awesome.min.css',98) %}
-    
+
             {% if browser.getBrowser == 'msie' and browser.getVersion >= 8 and browser.getVersion <= 9 %}
                 {% do assets.addCss('theme://css/nucleus-ie9.css') %}
                 {% do assets.addCss('theme://css/pure-0.5.0/grids-min.css') %}
@@ -43,7 +43,7 @@
             {% do assets.addJs('theme://js/learn.js', 95) %}
             {% do assets.addJs('theme://js/jquery.toc.js', 94) %}
         {% endblock %}
-    
+
         {{ assets.js() }}
     {% endblock %}
 </head>
@@ -88,7 +88,7 @@
                 {% if config.plugins.breadcrumbs.enabled %}
 					{% include 'partials/breadcrumbs.html.twig' %}
 				{% endif %}
-			    
+
 				<div class="toc">
 					<ol data-toc="body" data-toc-headings="h2, h3"></ol>
 				</div>
@@ -101,6 +101,11 @@
                 {% if theme_config.github.position == 'bottom' %}
                 {% include 'partials/github_note.html.twig' %}
                 {% endif %}
+                <footer>
+                    <div class="notify">
+                        You're reading our legacy documentation, the documentation for deprecated versions of UserFrosting. To read the docs for the current version of UserFrosting, visit <a href="https://learn.userfrosting.com/">learn.userfrosting.com</a>.
+                    </div>
+                </footer>
             {% endblock %}
 
         </div>
