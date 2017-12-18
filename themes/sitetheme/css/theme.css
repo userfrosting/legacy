@@ -36,7 +36,7 @@ a.nav-next:hover, a.nav-prev:hover {
 }
 
 
-/* Top bar 
+/* Top bar
 =====================*/
 
 #top-bar {
@@ -49,7 +49,7 @@ a.nav-next:hover, a.nav-prev:hover {
 }
 
 
-/* TOC 
+/* TOC
 =====================*/
 .toc h1 {
     margin-bottom: 1rem;
@@ -96,7 +96,7 @@ a.nav-next:hover, a.nav-prev:hover {
 }
 
 
-/* Github link 
+/* Github link
 =====================*/
 
 #top-github-link a {
@@ -223,7 +223,7 @@ h1 {
 
 h2 {
     font-size: 2rem;
-    border-bottom: 2px solid #ee6e73; 
+    border-bottom: 2px solid #ee6e73;
     display: table;
 }
 
@@ -464,7 +464,7 @@ mark {
     .searchbox input {
         font-size: 12px;
     }
-    
+
     #sidebar ul li a span {
         font-size: 14px;
     }
@@ -474,26 +474,26 @@ mark {
     #top-bar {
     padding: 42px 16px 24px 16px;
     }
-    
+
     h1 {}
     h2 {font-size: 1.5rem;}
     h3 {font-size: 1.25rem;}
     h4 {font-size: 1.15rem;}
     h5 {font-size: 1rem;}
     h6 {font-size: 1rem;}
-    
+
     code, pre, pre code {
         max-width: 94vw;
         white-space: pre-wrap;
     }
-    
+
     #chapter h1 {font-size: 2rem;}
     #chapter h4 {font-size: 1.5rem;}
-    
+
     #chapter #body-inner {
         height: 30vh;
     }
-    
+
     body {font-size: 15px;}
     p {margin: 1.33rem 0;}
     pre, code, pre code {font-size: 14px;}
@@ -548,4 +548,56 @@ input.form-control {
 
 .example-output pre {
     margin: 0;
+}
+
+/* Legacy Site
+=====================*/
+
+#header, nav.custom {
+    background-color: #38424d;
+}
+
+body {
+    background: #ededed;
+    color: #666;
+}
+
+a, #top-github-link a {
+    color: black;
+}
+
+a:hover, #top-github-link a:hover {
+    color: gray;
+}
+
+#body-inner a {
+    color: black;
+    border-bottom: 1px solid black;
+}
+
+#body-inner a:hover, #body-inner a:hover code {
+    color: gray;
+    border-bottom: 2px solid gray;
+}
+
+h2 {
+    border-bottom: 2px solid gray;
+}
+
+#sidebar h5 {
+    padding-left: 0;
+    width: 100%;
+    border-bottom: none;
+}
+
+#sidebar h5.active a {
+    background: #ededed;
+}
+
+#sidebar ul li.visited > a .read-icon {
+    color: gray;
+}
+
+#sidebar ul li.active > a {
+    background: rgb(237, 237, 237);
 }
