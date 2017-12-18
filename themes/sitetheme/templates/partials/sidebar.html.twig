@@ -25,13 +25,10 @@
     {% set parent_page = p.activeChild ? ' parent' : '' %}
     {% set current_page = p.active ? ' active' : '' %}
     <h5 class="{{ parent_page }}{{ current_page }}">
-        {% if p.activeChild or p.active %}
         <i class="fa fa-chevron-down fa-fw"></i>
-        {% else %}
-        <i class="fa fa-plus fa-fw"></i>
-        {% endif %}
         <a href="{{ p.url }}">{{ p.menu }}</a>
     </h5>
+
 {% endmacro %}
 
 <div class="scrollbar-inner">
