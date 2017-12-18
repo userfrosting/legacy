@@ -1,6 +1,10 @@
+---
+title: Alternative databases
+---
+
 ## Change connection driver
 
-Change the connection driver in [initialize.php](https://github.com/userfrosting/UserFrosting/blob/master/userfrosting/initialize.php#L42-L51).
+Change the connection driver in [initialize.php](https://github.com/userfrosting/UserFrosting/blob/3.1/userfrosting/initialize.php#L42-L51).
 
 ```
 $capsule->addConnection([
@@ -19,7 +23,7 @@ $capsule->addConnection([
 
 Manually create the tables, which would normally be created by the installer:
 
-[userfrosting/models/database/Database.php](https://github.com/userfrosting/UserFrosting/blob/master/userfrosting/models/database/Database.php#L167-L268)
+[userfrosting/models/database/Database.php](https://github.com/userfrosting/UserFrosting/blob/3.1/userfrosting/models/database/Database.php#L167-L268)
 
 ## Override installation status
 

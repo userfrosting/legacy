@@ -1,5 +1,5 @@
 ---
-title: Application lifecycle
+title: Application Lifecycle
 ---
 
 The lifecycle of the UserFrosting application extends the standard lifecycle of a Slim application.  Here is the breakdown:

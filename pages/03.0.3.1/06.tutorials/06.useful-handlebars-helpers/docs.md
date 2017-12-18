@@ -1,3 +1,7 @@
+---
+title: Useful helpers for HandlebarsJS
+---
+
 ```
 /**
  * format a string as a 7- or 10-digit phone number using regular expressions.

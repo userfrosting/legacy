@@ -88,7 +88,7 @@ Run `service apache2 restart`.
 
 ### Step 2: Download UserFrosting
 
-Download the [latest version](https://github.com/userfrosting/UserFrosting/zipball/master) of UserFrosting, unzip/untar it, and place it in your document root. The two directories that you need to worry about are `public` and `userfrosting`.
+Download the [latest version](https://github.com/userfrosting/UserFrosting/zipball/3.1) of UserFrosting, unzip/untar it, and place it in your document root. The two directories that you need to worry about are `public` and `userfrosting`.
 
 On a production server, you may wish to put the contents of `public` directly into the top-level public directory of your web hosting account, and put the `userfrosting` directory at the same level as the public directory. For example, if you FTP into your hosting account:
 
