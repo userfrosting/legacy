@@ -1,5 +1,5 @@
 home:
-  alias: '/quick-start'
+  alias: '/0.3.1'
 
 pages:
   theme: sitetheme
@@ -33,3 +33,6 @@ debugger:
   twig: true
   shutdown:
     close_connection: true
+
+errors:
+  display: true
