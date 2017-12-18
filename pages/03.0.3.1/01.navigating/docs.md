@@ -164,7 +164,7 @@ Now, let's look at the code for the `pageUsers` function, which is in `userfrost
  
     } else {
         // Access-controlled page
-        if (!$this->_app->user->checkAccess('uri_users')){
+        if (!$this->_app->user->checkAccess('uri_users')) {
             $this->_app->notFound();
         }
         

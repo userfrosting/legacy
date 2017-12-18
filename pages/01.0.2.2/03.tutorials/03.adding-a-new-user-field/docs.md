@@ -9,11 +9,11 @@ The most common question we get on the UserFrosting issues page is "how can I ad
 ## Step 1: Add a new column to the `users` table
 First, you will need to add a new column to the `users` table.  If you are using phpmyadmin, this is done by going to *(your database name here)*->uf_users->structure, and clicking "Go" at the bottom:
 
-![phpmyadmin - adding a new column](https://github.com/alexweissman/UserFrosting/blob/master/screenshots/demo-add-field-db.png)
+![phpmyadmin - adding a new column](/0.2.2/images/demo-add-field-db.png)
 
 It will then allow you to add a new field.  Let us suppose we want a simple text field with the name `city`.  We will make this a variable of type `varchar`, which is essentially a string variable, with a maximum length of 100.  You may, of course, create `int`, `date`, and other types of variables as well.  Give the field a default value - "Springfield", and click "Save":
 
-![phpmyadmin - example new field](https://github.com/alexweissman/UserFrosting/blob/master/screenshots/demo-example-new-field-db.png)
+![phpmyadmin - example new field](/0.2.2/images/demo-example-new-field-db.png)
 
 For other SQL clients, please consult their documentation on altering the structure of a table.  You can also add new columns by directly running a SQL command, please see the MySQL documentation for details.
 
@@ -27,7 +27,8 @@ First, let's tell UF how to insert the new field into the database when a new us
 
 ```
 // Add a user to the database
-function addUser($user_name, $display_name, $title, $password, $email, $active, $activation_token, <b>$city</b>){
+function addUser($user_name, $display_name, $title, $password, $email, $active, $activation_token, $city)
+{
     try {
         global $db_table_prefix;
         
@@ -39,7 +40,7 @@ function addUser($user_name, $display_name, $title, $password, $email, $active, 
             password,
             email,
             activation_token,
-            <b>city</b>,
+            city,
             last_activation_request,
             lost_password_request,
             lost_password_timestamp,
@@ -54,7 +55,7 @@ function addUser($user_name, $display_name, $title, $password, $email, $active, 
             :password,
             :email,
             :activation_token,
-            <b>:city</b>,
+            :city,
             '".time()."',
             '0',
             '".time()."',
@@ -62,7 +63,7 @@ function addUser($user_name, $display_name, $title, $password, $email, $active, 
             :title,
             '".time()."',
             '0'
-            )";
+        )";
     
         $sqlVars = array(
             ':user_name' => $user_name,
@@ -72,12 +73,12 @@ function addUser($user_name, $display_name, $title, $password, $email, $active, 
             ':email' => $email,
             ':active' => $active,
             ':activation_token' => $activation_token,
-            <b>':city' => $city</b>
+            ':city' => $city
         );
     
         $stmt = $db->prepare($query);
     
-        if (!$stmt->execute($sqlVars)){
+        if (!$stmt->execute($sqlVars)) {
             // Error: column does not exist
             return false;
         }
@@ -89,26 +90,27 @@ function addUser($user_name, $display_name, $title, $password, $email, $active, 
         return $inserted_id;
 
     } catch (PDOException $e) {
-      addAlert("danger", "Oops, looks like our database encountered an error.");
-      error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
-      return false;
+        addAlert("danger", "Oops, looks like our database encountered an error.");
+        error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+        return false;
     } catch (ErrorException $e) {
-      addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
-      return false;
+        addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+        return false;
     }
 }
 ```
 
-Make sure you check for correct usage of commas, etc.  Notice that we use a placeholder in the query, and then use PDO to prepare the query with the `$sqlVars` array.  It is **extremely** important to do this, instead of directly interpolating the variables in the query.  Interpolating variables directly in your query leaves you open to [SQL injection attacks](http://www.userfrosting.com/security.html#sql-inject).
+Make sure you check for correct usage of commas, etc.  Notice that we use a placeholder in the query, and then use PDO to prepare the query with the `$sqlVars` array.  It is **extremely** important to do this, instead of directly interpolating the variables in the query.  Interpolating variables directly in your query leaves you open to [SQL injection attacks](/0.3.1/security#sql-inject).
 
 ### Read
 
 Next, we will tell UF how to load the new field when it loads information for a new user.  This is done in the functions `fetchUser`, `fetchAllUsers`, `fetchGroupUsers`, and `fetchUserAuth`.  You will want to make the following changes (in bold):
 
-#### fetchAllUsers
+#### `fetchAllUsers`
 
 ```
-function fetchAllUsers($limit = null){
+function fetchAllUsers($limit = null)
+{
     try {
         global $db_table_prefix;
 
@@ -119,14 +121,15 @@ function fetchAllUsers($limit = null){
         $sqlVars = array();
 
         $query = "select {$db_table_prefix}users.id as user_id, user_name, display_name, email, title, sign_up_stamp, 
-        last_sign_in_stamp, active, enabled, primary_group_id, <b>city</b> from {$db_table_prefix}users";
+        last_sign_in_stamp, active, enabled, primary_group_id, city from {$db_table_prefix}users";
 
         $stmt = $db->prepare($query);
         $stmt->execute($sqlVars);
 
-        if (!$limit){
+        if (!$limit) {
             $limit = 9999999;
         }
+
         $i = 0;
         while ($r = $stmt->fetch(PDO::FETCH_ASSOC) and $i < $limit) {
             $id = $r['user_id'];
@@ -142,49 +145,50 @@ function fetchAllUsers($limit = null){
         error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
         return false;
     } catch (ErrorException $e) {
-      addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
-      return false;
+        addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+        return false;
     }
 }
 ```
 
-#### fetchUser
+#### `fetchUser`
 
 ```
-function fetchUser($user_id){
+function fetchUser($user_id)
+{
     try {
-      global $db_table_prefix;
-      
-      $results = array();
-      
-      $db = pdoConnect();
-      
-      $sqlVars = array();
-      
-      $query = "select {$db_table_prefix}users.id as user_id, user_name, display_name, email, title, sign_up_stamp,
-      last_sign_in_stamp, active, enabled, primary_group_id, <b>city</b> from {$db_table_prefix}users where {$db_table_prefix}users.id = :user_id";
-      
-      $sqlVars[':user_id'] = $user_id;
-      
-      $stmt = $db->prepare($query);
-      $stmt->execute($sqlVars);
-      
-      if (!($results = $stmt->fetch(PDO::FETCH_ASSOC))){
-          addAlert("danger", "Invalid user id specified");
-          return false;
-      }
-      
-      $stmt = null;
-    
-      return $results;
-      
+        global $db_table_prefix;
+
+        $results = array();
+
+        $db = pdoConnect();
+
+        $sqlVars = array();
+
+        $query = "select {$db_table_prefix}users.id as user_id, user_name, display_name, email, title, sign_up_stamp,
+        last_sign_in_stamp, active, enabled, primary_group_id, city from {$db_table_prefix}users where {$db_table_prefix}users.id = :user_id";
+
+        $sqlVars[':user_id'] = $user_id;
+
+        $stmt = $db->prepare($query);
+        $stmt->execute($sqlVars);
+
+        if (!($results = $stmt->fetch(PDO::FETCH_ASSOC))){
+            addAlert("danger", "Invalid user id specified");
+            return false;
+        }
+
+        $stmt = null;
+
+        return $results;
+
     } catch (PDOException $e) {
-      addAlert("danger", "Oops, looks like our database encountered an error.");
-      error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
-      return false;
+        addAlert("danger", "Oops, looks like our database encountered an error.");
+        error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+        return false;
     } catch (ErrorException $e) {
-      addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
-      return false;
+        addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+        return false;
     }
 }
 ```
@@ -192,7 +196,8 @@ function fetchUser($user_id){
 #### fetchUserAuth
 
 ```
-function fetchUserAuth($column, $data){    
+function fetchUserAuth($column, $data)
+{    
     try {
         global $db_table_prefix;
         
@@ -218,7 +223,7 @@ function fetchUserAuth($column, $data){
             last_sign_in_stamp,
             enabled,
             primary_group_id,
-            <b>city</b>
+            city
             FROM ".$db_table_prefix."users
             WHERE
             $column = :data
@@ -230,7 +235,7 @@ function fetchUserAuth($column, $data){
         
         $stmt->execute($sqlVars);
           
-        if (!($results = $stmt->fetch(PDO::FETCH_ASSOC))){
+        if (!($results = $stmt->fetch(PDO::FETCH_ASSOC))) {
             // The user does not exist
             return false;
         }
@@ -239,16 +244,16 @@ function fetchUserAuth($column, $data){
         return $results;
       
     } catch (PDOException $e) {
-      addAlert("danger", "Oops, looks like our database encountered an error.");
-      error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
-      return false;
+        addAlert("danger", "Oops, looks like our database encountered an error.");
+        error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+        return false;
     } catch (ErrorException $e) {
-      addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
-      return false;
+        addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+        return false;
     } catch (RuntimeException $e) {
-      addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
-      error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
-      return false;
+        addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+        error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+        return false;
     }
 }
 ```
@@ -257,46 +262,47 @@ function fetchUserAuth($column, $data){
 
 ```
 // Fetch user information for a specified group
-function fetchGroupUsers($group_id) {
+function fetchGroupUsers($group_id)
+{
     try {
         global $db_table_prefix;
-        
+
         $results = array();
-        
+
         $db = pdoConnect();
-        
+
         $sqlVars = array();
-        
+
         $query = "SELECT {$db_table_prefix}users.id as user_id, user_name, display_name, email, title, sign_up_stamp,
-            last_sign_in_stamp, active, enabled, primary_group_id, <b>city</b>
+            last_sign_in_stamp, active, enabled, primary_group_id, city
             FROM ".$db_table_prefix."user_group_matches,".$db_table_prefix."users
             WHERE group_id = :group_id and ".$db_table_prefix."user_group_matches.user_id = ".$db_table_prefix."users.id
             ";
-        
+
         $stmt = $db->prepare($query);    
 
         $sqlVars[':group_id'] = $group_id;
-        
-        if (!$stmt->execute($sqlVars)){
+
+        if (!$stmt->execute($sqlVars)) {
             // Error
             return false;
         }
-            
+
         while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
-              $id = $r['user_id'];
-              $results[$id] = $r;
+            $id = $r['user_id'];
+            $results[$id] = $r;
         }
         $stmt = null;
-          
+
         return $results;
-          
+
     } catch (PDOException $e) {
-      addAlert("danger", "Oops, looks like our database encountered an error.");
-      error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
-      return false;
+        addAlert("danger", "Oops, looks like our database encountered an error.");
+        error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+        return false;
     } catch (ErrorException $e) {
-      addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
-      return false;
+        addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+        return false;
     }
 }
 ```
@@ -309,12 +315,13 @@ Userfrosting uses the generic functions `updateUserField` and `deleteUser` to pe
 
 UserFrosting uses a separate functional layer to control authorization.  The functions in `db_functions.php` allow you to perform basic DB operations, but by themselves, they do not control **who** is allowed to perform those operations.  To provide access control, we must modify the functions in `models/secure_functions.php`.  In this case, we only need to modify the `createUser` function, and add a new function to update your new field.  Please find the `createUser` function and make the following modifications (in bold):
 
-### createUser
+### `createUser`
 
 ```
-function createUser($user_name, $display_name, $email, <b>$city</b>, $title, $password, $passwordc, $require_activation, $admin) {
+function createUser($user_name, $display_name, $email, $city, $title, $password, $passwordc, $require_activation, $admin)
+{
     // if we're in admin mode, then the user must be logged in and have appropriate permissions
-    if ($admin == "true"){
+    if ($admin == "true") {
         // This block automatically checks this action against the permissions database before running.
         if (!checkActionPermissionSelf(__FUNCTION__, func_get_args())) {
             addAlert("danger", "Sorry, you do not have permission to access this resource.");
@@ -325,81 +332,81 @@ function createUser($user_name, $display_name, $email, <b>$city</b>, $title, $pa
     $error_count = 0;
 
     // Check values
-    if(minMaxRange(1,25,$user_name))
-    {
+    if (minMaxRange(1,25,$user_name)) {
         addAlert("danger", lang("ACCOUNT_USER_CHAR_LIMIT",array(1,25)));
         $error_count++;
     }
-    if(!ctype_alnum($user_name)){
+
+    if (!ctype_alnum($user_name)) {
         addAlert("danger", lang("ACCOUNT_USER_INVALID_CHARACTERS"));
         $error_count++;
     }
-    if(minMaxRange(1,50,$display_name))
-    {
+
+    if (minMaxRange(1,50,$display_name)) {
         addAlert("danger", lang("ACCOUNT_DISPLAY_CHAR_LIMIT",array(1,50)));
         $error_count++;
     }
-    if(!isValidName($display_name)){
+
+    if (!isValidName($display_name)) {
         addAlert("danger", lang("ACCOUNT_DISPLAY_INVALID_CHARACTERS"));
         $error_count++;
     }
-    if(!isValidEmail($email))
-    {
+
+    if (!isValidEmail($email)) {
         addAlert("danger", lang("ACCOUNT_INVALID_EMAIL"));
         $error_count++;
     }
-    <b>if(minMaxRange(1,100,$city))
-    {
+    
+    if (minMaxRange(1,100,$city)) {
         addAlert("danger", "City must be between 1 and 100 characters long!");
         $error_count++;
     }
-    </b>
-    if(minMaxRange(1,150,$title)) {
+
+    if (minMaxRange(1,150,$title)) {
         addAlert("danger", lang("ACCOUNT_TITLE_CHAR_LIMIT",array(1,150)));
         $error_count++;
     }
-    if(minMaxRange(8,50,$password) && minMaxRange(8,50,$passwordc))
-    {
+    
+    if (minMaxRange(8,50,$password) && minMaxRange(8,50,$passwordc)) {
         addAlert("danger", lang("ACCOUNT_PASS_CHAR_LIMIT",array(8,50)));
         $error_count++;
-    }
-    else if($password != $passwordc)
-    {
+    } elseif ($password != $passwordc) {
         addAlert("danger", lang("ACCOUNT_PASS_MISMATCH"));
         $error_count++;
     }
 
-    if(usernameExists($user_name)) {
+    if (usernameExists($user_name)) {
         addAlert("danger", lang("ACCOUNT_USERNAME_IN_USE",array($user_name)));
         $error_count++;
     }
-    if(displayNameExists($display_name)) {
+
+    if (displayNameExists($display_name)) {
         addAlert("danger", lang("ACCOUNT_DISPLAYNAME_IN_USE",array($display_name)));
         $error_count++;
     }
-    if(emailExists($email)) {
+
+    if (emailExists($email)) {
         addAlert("danger", lang("ACCOUNT_EMAIL_IN_USE",array($email)));
         $error_count++;
     }
 
     //Construct a secure hash for the plain text password
     $password_hash = passwordHashUF($password);
-    if ($password_hash === null){
+    if ($password_hash === null) {
         addAlert("danger", lang("PASSWORD_HASH_FAILED"));
         $error_count++;        
     }
     
     // Exit on any invalid parameters
-    if($error_count != 0)
+    if ($error_count != 0)
         return false;
     
-
     //Construct a unique activation token (even if activation is not required)
     $activation_token = generateActivationToken();
     $active = 1;
 
     //Do we need to require that the user activate their account first?
-    if($require_activation) {
+    if ($require_activation) {
 
         //User must activate their account first
         $active = 0;
@@ -418,7 +425,7 @@ function createUser($user_name, $display_name, $email, <b>$city</b>, $title, $pa
         /* Build the template - Optional, you can just use the sendMail function
         Instead to pass a message. */
         // If there is a mail failure, fatal error
-        if(!$mailSender->newTemplateMsg("new-registration.txt",$hooks)) {
+        if (!$mailSender->newTemplateMsg("new-registration.txt",$hooks)) {
             addAlert("danger", lang("MAIL_ERROR"));
             return false;
         } else {
@@ -432,7 +439,7 @@ function createUser($user_name, $display_name, $email, <b>$city</b>, $title, $pa
     }
 
     // Insert the user into the database and return the new user's id
-    return addUser($user_name, $display_name, $title, $password_hash, $email, $active, $activation_token, <b>$city</b>);
+    return addUser($user_name, $display_name, $title, $password_hash, $email, $active, $activation_token, $city);
 }
 ```
 
@@ -441,7 +448,8 @@ Notice that we first add the new field as a parameter to `createUser`, then crea
 Next, we will create an update function for the new field.  This will allow you to provide fine-grained control over who is allowed to modify this particular field.  In `secure_functions.php`, create a new function, `updateUserCity`:
 
 ```
-function updateUserCity($user_id, $city) {
+function updateUserCity($user_id, $city)
+{
     // This block automatically checks this action against the permissions database before running.
     if (!checkActionPermissionSelf(__FUNCTION__, func_get_args())) {
         addAlert("danger", "Sorry, you do not have permission to access this resource.");
@@ -449,12 +457,12 @@ function updateUserCity($user_id, $city) {
     }
 
     //Validate city
-    if(minMaxRange(1,100,$city)) {
+    if (minMaxRange(1,100,$city)) {
         addAlert("danger", "City must be between 1 and 100 characters long!");
         return false;
     }
 
-    if (updateUserField($user_id, 'city', $city)){
+    if (updateUserField($user_id, 'city', $city)) {
         addAlert("success", "City updated successfully.");
         return true;
     } else {
@@ -473,7 +481,7 @@ Great!  At this point, we've finished implementing the heavy machinery for our n
 
 The pages in `api/` are the primary access point where the frontend (tables, forms, etc) interacts with the backend (database, authorization, and validation layers).  For our new `city` field, we will need to modify `api/create_user.php` and `api/update_user.php`.  Again, modifications are in bold:
 
-### create_user.php
+### `create_user.php`
 
 The main lines to worry about here are approximately lines 79-137:
 
@@ -481,13 +489,15 @@ The main lines to worry about here are approximately lines 79-137:
 $user_name = str_normalize($validator->requiredPostVar('user_name'));
 $display_name = trim($validator->requiredPostVar('display_name'));
 $email = str_normalize($validator->requiredPostVar('email'));
-<b>$city = str_normalize($validator->requiredPostVar('city'));</b>
+$city = str_normalize($validator->requiredPostVar('city'));
+
 // If we're in admin mode, require title.  Otherwise, use the default title
-if ($admin == "true"){
+if ($admin == "true") {
   $title = trim($validator->requiredPostVar('title'));
 } else {
   $title = $new_user_title;
 }
+
 // Don't trim passwords
 $password = $validator->requiredPostVar('password');
 $passwordc = $validator->requiredPostVar('passwordc');
@@ -502,38 +512,38 @@ $captcha = $validator->optionalPostVar('captcha');
 $spiderbro = $validator->optionalPostVar('spiderbro');
 
 // Add alerts for any failed input validation
-foreach ($validator->errors as $error){
+foreach ($validator->errors as $error) {
   addAlert("danger", $error);
 }
 
 $error_count = count($validator->errors);
 
 // Check captcha and honeypot if not in admin mode
-if ($admin != "true"){
-    if (!$captcha || md5($captcha) != $_SESSION['captcha']){
+if ($admin != "true") {
+    if (!$captcha || md5($captcha) != $_SESSION['captcha']) {
         addAlert("danger", lang("CAPTCHA_FAIL"));
         $error_count++;
     }
   
     // Check the honeypot. 'spiderbro' is not a real field, it is hidden on the main page and must be submitted with its default value for this to be processed.
-    if ($spiderbro != "http://"){
+    if ($spiderbro != "http://") {
         error_log("Possible spam received:" . print_r($_POST, true));
         addAlert("danger", "Aww hellllls no!");
         $error_count++;
     }     
 }
 
-if ($error_count == 0){
+if ($error_count == 0) {
     global $emailActivation;
 
 	// Use the global email activation setting unless we're told to skip it
 	if ($admin == "true" && $skip_activation == "true")
-	  $require_activation = false;
+        $require_activation = false;
 	else  
-	  $require_activation = $emailActivation;
-	
+        $require_activation = $emailActivation;
+
 	// Try to create the new user
-	if ($new_user_id = createUser($user_name, $display_name, $email, <b>$city</b>, $title, $password, $passwordc, $require_activation, $admin)){
+	if ($new_user_id = createUser($user_name, $display_name, $email, $city, $title, $password, $passwordc, $require_activation, $admin)) {
 
 	} else {
 		apiReturnError($ajax, ($admin == "true") ? ACCOUNT_ROOT : SITE_ROOT);
@@ -542,7 +552,7 @@ if ($error_count == 0){
 
 Notice that we've declared the new field as a required POST variable.  So, we are saying that the `city` field MUST be specified when a new user is created.  You can use the `optionalPostVar` function if you want UF to automatically set the value to `null` if it is not specified.
 
-### update_user.php
+### `update_user.php`
 
 For updating a user, we don't want to require that the city field be specified every time.  After all, what if we just want to update some other field?  So here, we will use the `optionalPostVar` function:
 
@@ -556,7 +566,7 @@ $user_id = $validator->requiredNumericPostVar('user_id');
 
 $display_name = trim($validator->optionalPostVar('display_name'));
 $email = str_normalize($validator->optionalPostVar('email'));
-<b>$city = str_normalize($validator->optionalPostVar('city'));</b>
+$city = str_normalize($validator->optionalPostVar('city'));
 $title = trim($validator->optionalPostVar('title'));
 
 $rm_groups = $validator->optionalPostVar('remove_groups');
@@ -574,11 +584,11 @@ $passwordcheck = $validator->optionalPostVar('passwordcheck');
 
 ```
 //Update city if specified and different from current value
-if ($city && $userdetails['city'] != $city){
-    if (!updateUserCity($user_id, $city)){
-	$error_count++;
+if ($city && $userdetails['city'] != $city) {
+    if (!updateUserCity($user_id, $city)) {
+        $error_count++;
     } else {
-	$success_count++;
+        $success_count++;
     }
 }
 ```
@@ -660,7 +670,7 @@ $fields = [
             'label' => 'Security code'
         ]                 
     ],
-    <b>'city' => [
+    'city' => [
         'type' => 'text',
         'label' => 'City',
         'icon' => 'fa fa-map-marker',
@@ -670,11 +680,11 @@ $fields = [
             'label' => 'City'
         ],
         'placeholder' => 'Please enter the city'
-    ]</b>
+    ]
 ];
 ```
 
-Notice that we have specified that this is a text field by using the `'type' => 'text'` property, and given it the label "City".  This label will appear next to the field in the registration form.  We have also given it an icon from the FontAwesome icon catalog (http://fontawesome.io/icons/), and specified a client-side validator.  The client-side validator lets UF validate the field before the form is even submitted, in the client's browser.  This is for user convenience only!  Someone could still find a way to POST invalid data to the API page, which is why we had to validate the new field on the server side as well.
+Notice that we have specified that this is a text field by using the `'type' => 'text'` property, and given it the label "City".  This label will appear next to the field in the registration form.  We have also given it an icon from the [FontAwesome icon catalog](http://fontawesome.io/icons/), and specified a client-side validator.  The client-side validator lets UF validate the field before the form is even submitted, in the client's browser.  This is for user convenience only!  Someone could still find a way to POST invalid data to the API page, which is why we had to validate the new field on the server side as well.
 
 We will also tell UF where to place the new field in the template.  To do this, modify the template (starting on line 129):
 
@@ -752,17 +762,17 @@ That does it for the registration page, but what about managing the field on the
 
 ```
 'city' => [
-        'type' => 'text',
-        'label' => 'City',
-        'icon' => 'fa fa-map-marker',
-        <b>'display' => 'disabled',</b>
-        'validator' => [
-            'minLength' => 1,
-            'maxLength' => 100,
-            'label' => 'City'
-        ],
-        'placeholder' => 'Please enter the city'
-    ]
+    'type' => 'text',
+    'label' => 'City',
+    'icon' => 'fa fa-map-marker',
+    'display' => 'disabled',
+    'validator' => [
+        'minLength' => 1,
+        'maxLength' => 100,
+        'label' => 'City'
+    ],
+    'placeholder' => 'Please enter the city'
+]
 ```
 
 We also need to add the field to the template, starting on line 294:
@@ -831,9 +841,9 @@ var data = {
         'email' : {
             'display' : 'show'
         },
-        <b>'city' : {
+        'city' : {
             'display' : 'show'
-        },</b>
+        },
         'title' : {
             'display' : 'show'
         },			
