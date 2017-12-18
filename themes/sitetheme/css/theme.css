@@ -625,3 +625,7 @@ h2 {
     color: gray;
     border-bottom: gray;
 }
+
+#mobile-nav a {
+    color: white;
+}
