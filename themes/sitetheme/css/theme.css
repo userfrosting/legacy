@@ -609,20 +609,18 @@ h2 {
 .notify {
     width: 100%;
     padding: 10px;
-    background: #38424d;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    color: #ededed;
+    margin-bottom: 40px;
+    background: #445160;
+    color: white;
     text-align: center;
+    border: #ee6e73 5px solid;
 }
 
-footer a {
+.notify a {
     color: inherit;
     border-bottom: 1px solid #ededed;
 }
 
-footer a:hover, footer a:active, footer a:focus {
+.notify a:hover, .notify a:active, .notify a:focus {
     color: gray;
     border-bottom: gray;
-}
