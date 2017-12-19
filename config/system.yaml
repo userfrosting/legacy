@@ -1,6 +1,3 @@
-home:
-  alias: '/0.3.1'
-
 pages:
   theme: sitetheme
   markdown_extra: true
@@ -33,6 +30,3 @@ debugger:
   twig: true
   shutdown:
     close_connection: true
-
-errors:
-  display: true
